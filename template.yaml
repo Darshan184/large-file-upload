@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM Template for Large file upload
+
+Globals:
+  Function:
+    Timeout: 20
+    MemorySize: 512
+    Runtime: java21
+    Architectures:
+      - x86_64
+
+Resources:
+  # 1. The S3 Bucket for Storage
+  UploadBucketDarshan:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-uploads"
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: [PUT, POST]
+            AllowedOrigins: ['*']
+
+  # 2. The Lambda Function
+  GetPresignedUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: PreSignedUrlFunction
+      Handler: presignedurl.PreSignedUrl::handleRequest
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref UploadBucketDarshan
+      Policies:
+        - S3WritePolicy:
+            BucketName: !Ref UploadBucketDarshan
+      Events:
+        GetUrlApi:
+          Type: Api
+          Properties:
+            Path: /generate-url
+            Method: post
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/generate-url"
+  BucketName:
+    Description: "S3 Bucket Name"
+    Value: !Ref UploadBucketDarshan
