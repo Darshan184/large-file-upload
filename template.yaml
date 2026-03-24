@@ -21,19 +21,28 @@ Resources:
           - AllowedHeaders: ['*']
             AllowedMethods: [PUT, POST]
             AllowedOrigins: ['*']
+            ExposedHeaders: [ETag]
 
   # 2. The Lambda Function
   GetPresignedUrlFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: PreSignedUrlFunction
+      CodeUri: .
       Handler: presignedurl.PreSignedUrl::handleRequest
       Environment:
         Variables:
           BUCKET_NAME: !Ref UploadBucketDarshan
+          AWS_REGIONS: !Ref "AWS::Region"
       Policies:
-        - S3WritePolicy:
-            BucketName: !Ref UploadBucketDarshan
+        - Statement:
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+                - s3:ListMultipartUploadParts
+                - s3:ListBucketMultipartUploads
+              Resource:
+                - !Sub "arn:aws:s3:::${UploadBucketDarshan}/*"
+                - !Sub "arn:aws:s3:::${UploadBucketDarshan}"
       Events:
         GetUrlApi:
           Type: Api
