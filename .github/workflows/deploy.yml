@@ -1,9 +1,9 @@
-name: Deploy large file
+name: Deploy Prod instance of Assessment-Tracker
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy-sam-changes:
@@ -15,8 +15,8 @@ jobs:
     env:
       AWS_REGION: us-east-1
       STACK_NAME_PREFIX: large-file-upload
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
 
 
     steps:
