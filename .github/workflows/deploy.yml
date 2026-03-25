@@ -1,4 +1,4 @@
-name: Deploy Prod instance of Assessment-Tracker
+name: Deploy Large file
 
 on:
   push:
