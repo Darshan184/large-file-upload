@@ -1,0 +1,54 @@
+name: Deploy Prod instance of Assessment-Tracker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-sam-changes:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: .
+
+    env:
+      AWS_REGION: us-east-1
+      STACK_NAME_PREFIX: large-file-upload
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+
+
+    steps:
+      - uses: actions/checkout@v4
+
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+          cache: 'maven'
+
+      - name: Set up SAM
+        uses: aws-actions/setup-sam@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+
+
+      - name: Run Test with maven
+        run: mvn clean test
+      - name: Install Maven dependencies
+        run: mvn install
+      - name: Build SAM Application
+        run: sam build
+
+      - name: Deploy SAM Application
+        run: sam deploy --profile large1 --no-confirm-changeset --no-fail-on-empty-changeset
+
+
