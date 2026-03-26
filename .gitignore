@@ -1,7 +1,7 @@
-.aws-sam\
-.idea\
+.aws-sam/
+.idea/
 large-file-upload.iml
-target\
-events\
+target/
+events/
 
 
