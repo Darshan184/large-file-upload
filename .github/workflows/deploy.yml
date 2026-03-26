@@ -50,6 +50,6 @@ jobs:
         run: sam build
 
       - name: Deploy SAM Application
-        run: sam deploy  --no-confirm-changeset --no-fail-on-empty-changeset
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
 
 
