@@ -21,7 +21,7 @@ stack_name = "large-file-upload-darshan1"
 s3_prefix = "large-file-upload-darshan1"
 disable_rollback = true
 image_repositories = []
-profile = "large1"
+
 
 [default.package.parameters]
 resolve_s3 = true
